@@ -1,0 +1,123 @@
+<div class="container">
+    <form [formGroup]="cvForm" (ngSubmit)="onSubmit()">
+      <div class="form-section">
+        <h3>Foto de Perfil</h3>
+        <div class="image-upload-container">
+          <div class="image-preview" id="imagePreview">
+            <img [src]="imagePreview" *ngIf="imagePreview" alt="Vista previa de la imagen">
+          </div>
+          <label class="image-upload-button">
+            Subir Foto
+            <input type="file" (change)="onFileChange($event)" accept="image/png, image/jpeg" style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Ubicación</h3>
+        <input type="text" id="ubicacion" formControlName="ubicacion" readonly>
+        <button type="button" (click)="showMap()">Elegir ubicación</button>
+        
+        <div #mapContainer id="mapContainer" style="height: 400px; display: none;">
+          <div id="map" style="height: 100%;"></div>
+          <div>Número de clics: {{clickCounter}}</div>
+          <div>{{selectedLocation}}</div>
+          <button type="button" (click)="saveLocation()">Guardar ubicación</button>
+        </div>
+      </div>
+  
+      <div class="form-section">
+        <h3>Datos Personales</h3>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" formControlName="nombre" required>
+        
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" formControlName="apellido" required>
+        
+        <label for="cedula">Cédula:</label>
+        <input type="text" id="cedula" formControlName="cedula" required>
+        
+        <label for="telefono">Teléfono:</label>
+        <input type="tel" id="telefono" formControlName="telefono" required>
+        
+        <label for="correo">Correo Electrónico:</label>
+        <input type="email" id="correo" formControlName="correo" required>
+        
+        <label for="sitioWeb">Sitio Web (opcional):</label>
+        <input type="url" id="sitioWeb" formControlName="sitioWeb">
+        
+        <label for="ubicacion">Ubicación:</label>
+        <input type="text" id="ubicacion" formControlName="ubicacion" required>
+      </div>
+  
+      <div class="form-section">
+        <h3>Experiencia Laboral</h3>
+        <div formArrayName="experiencias">
+          <div *ngFor="let experiencia of experiencias.controls; let i = index" [formGroupName]="i">
+            <input type="text" formControlName="puesto" placeholder="Título del puesto" required>
+            <input type="text" formControlName="empresa" placeholder="Empresa" required>
+            <div class="date-range">
+              <input type="month" formControlName="fechaInicio" placeholder="Fecha inicio" required>
+              <input type="month" formControlName="fechaFin" placeholder="Fecha fin">
+            </div>
+            <textarea formControlName="descripcion" placeholder="Descripción de responsabilidades" required></textarea>
+            <button type="button" (click)="deleteField('experiencias', i)">Eliminar</button>
+          </div>
+        </div>
+        <button type="button" (click)="addField('experiencias')">+ Agregar Experiencia</button>
+      </div>
+  
+      <div class="form-section">
+        <h3>Formación Académica</h3>
+        <div formArrayName="formaciones">
+          <div *ngFor="let formacion of formaciones.controls; let i = index" [formGroupName]="i">
+            <input type="text" formControlName="titulo" placeholder="Título/Grado" required>
+            <input type="text" formControlName="institucion" placeholder="Institución" required>
+            <div class="date-range">
+              <input type="month" formControlName="fechaInicio" placeholder="Fecha inicio" required>
+              <input type="month" formControlName="fechaFin" placeholder="Fecha fin">
+            </div>
+            <button type="button" (click)="deleteField('formaciones', i)">Eliminar</button>
+          </div>
+        </div>
+        <button type="button" (click)="addField('formaciones')">+ Agregar Formación</button>
+      </div>
+  
+      <div class="form-section">
+        <h3>Competencias</h3>
+        <div formArrayName="competencias">
+          <div *ngFor="let competencia of competencias.controls; let i = index" [formGroupName]="i">
+            <input type="text" formControlName="nombre" placeholder="Competencia" required>
+            <input type="range" formControlName="nivel" min="0" max="5" step="1">
+            <button type="button" (click)="deleteField('competencias', i)">Eliminar</button>
+          </div>
+        </div>
+        <button type="button" (click)="addField('competencias')">+ Agregar Competencia</button>
+      </div>
+  
+      <div class="form-section">
+        <h3>Habilidades</h3>
+        <div formArrayName="habilidades">
+          <div *ngFor="let habilidad of habilidades.controls; let i = index" [formGroupName]="i">
+            <input type="text" formControlName="nombre" placeholder="Habilidad" required>
+            <input type="range" formControlName="nivel" min="0" max="5" step="1">
+            <button type="button" (click)="deleteField('habilidades', i)">Eliminar</button>
+          </div>
+        </div>
+        <button type="button" (click)="addField('habilidades')">+ Agregar Habilidad</button>
+      </div>
+  
+      <div class="button-container">
+        <button type="submit">Generar Curriculum</button>
+        <button type="button" (click)="printCV()">Imprimir</button>
+        <button type="button" (click)="sendCV()">Enviar</button>
+      </div>
+    </form>
+  
+    <div *ngIf="showSuccessMessage" class="success-message">
+      ¡El curriculum ha sido enviado correctamente!
+    </div>
+  
+    <div *ngIf="cvPreview" class="cv-preview" [innerHTML]="cvPreview"></div>
+  </div>
+  
